@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV - Joaquín Gandini</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            color: white;
+            padding: 50px 60px;
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+        
+        .photo-container {
+            flex-shrink: 0;
+        }
+        
+        .photo-placeholder {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: white;
+            border: 4px solid rgba(255,255,255,0.2);
+            font-weight: 300;
+        }
+        
+        .header-info {
+            flex: 1;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .header .title {
+            font-size: 1.2em;
+            color: #a0aec0;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 0.9em;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .contact-item::before {
+            content: "●";
+            color: #667eea;
+            font-size: 0.7em;
+        }
+        
+        .main-content {
+            padding: 50px 60px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .section-title {
+            font-size: 1.4em;
+            color: #1a202c;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .profile-summary {
+            color: #2d3748;
+            font-size: 1.05em;
+            line-height: 1.8;
+            text-align: justify;
+            background: #f7fafc;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+        }
+        
+        .experience-item {
+            margin-bottom: 30px;
+        }
+        
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .job-title {
+            font-size: 1.2em;
+            color: #1a202c;
+            font-weight: 700;
+        }
+        
+        .period {
+            color: #718096;
+            font-size: 0.9em;
+            font-weight: 600;
+            background: #edf2f7;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+        
+        .company {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+        
+        .responsibilities {
+            color: #4a5568;
+            text-align: justify;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
+        .key-projects {
+            background: #f7fafc;
+            padding: 15px 20px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .projects-title {
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+        
+        .project-list {
+            color: #4a5568;
+            line-height: 1.8;
+        }
+        
+        .leadership-section {
+            background: #f7fafc;
+            padding: 15px 20px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .metrics-section {
+            background: #edf2f7;
+            padding: 15px 20px;
+            border-radius: 6px;
+            border-left: 3px solid #764ba2;
+        }
+        
+        .leadership-title {
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+        
+        .education-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .education-item {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+        
+        .education-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+            background: #edf2f7;
+        }
+        
+        .degree {
+            font-weight: 700;
+            color: #1a202c;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        
+        .institution {
+            color: #667eea;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .year {
+            color: #718096;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .skill-category {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border-top: 4px solid #667eea;
+        }
+        
+        .skill-category h3 {
+            color: #1a202c;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+        
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .skill-tag {
+            background: white;
+            color: #2d3748;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            border: 2px solid #cbd5e0;
+            font-weight: 500;
+        }
+        
+        .skill-list {
+            list-style: none;
+            color: #4a5568;
+        }
+        
+        .skill-list li {
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            font-weight: 500;
+        }
+        
+        .skill-list li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                padding: 30px 30px;
+                text-align: center;
+            }
+            
+            .photo-container {
+                margin: 0 auto;
+            }
+            
+            .header-info {
+                width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .main-content {
+                padding: 30px 30px;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: 12px;
+                align-items: center;
+            }
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="photo-container">
+                <img src="foto.enc" alt="Joaquín Gandini" style="width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 4px solid rgba(255,255,255,0.2);">
+            </div>
+            <div class="header-info">
+                <h1>Joaquín Gandini</h1>
+                <div class="title">Desarrollador & Líder de Equipo</div>
+                <div class="contact-info">
+                    <div class="contact-item">joacocjs.6@gmail.com</div>
+                    <div class="contact-item">+598 98 417 198</div>
+                    <div class="contact-item">Montevideo, Uruguay</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="section">
+                <h2 class="section-title">Perfil Profesional</h2>
+                <div class="profile-summary">
+                    Desarrollador con 5 años de experiencia en sistemas ERP y un track record comprobado de crecimiento desde Soporte hasta Líder de Equipo. 
+                    Especializado en integraciones complejas, desarrollo de soluciones personalizadas y coordinación de equipos remotos. Combino habilidades 
+                    técnicas sólidas con visión de negocio para entregar soluciones que impactan directamente en la operativa de clientes corporativos, 
+                    gestionando múltiples proyectos simultáneos con clientes de alto perfil.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Experiencia Profesional</h2>
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div class="job-title">Desarrollador Nodum ERP</div>
+                        <div class="period">2020 - Actualidad (5 años)</div>
+                    </div>
+                    <div class="company">Cziber SRL</div>
+                    
+                    <div class="responsibilities">
+                        Comencé en el área de Soporte Nodum, donde absorbí rápidamente conocimiento de la estructura de datos y las necesidades de los clientes. 
+                        Resolví urgencias relacionadas con problemas de stock, facturación y consultas contables del software ERP. Realicé armado de queries y reportes personalizados para clientes.
+                    </div>
+                    
+                    <div class="responsibilities">
+                        A los 2 años fui promovido a desarrollador, asumiendo la responsabilidad de realizar cambios en procesos internos de los clientes. 
+                        Coordino reuniones para definir proyectos de corto, mediano y largo alcance, trabajando directamente con stakeholders para entender requerimientos y traducirlos en soluciones técnicas efectivas.
+                    </div>
+                    
+                    <div class="key-projects">
+                        <div class="projects-title">Proyectos Destacados:</div>
+                        <div class="project-list">
+                            • <strong>Sistema de Tickets Interno:</strong> Desarrollé desde cero el sistema de gestión de incidencias en Nodum para Cziber, actualmente utilizado por todos los equipos de Soporte Nodum e IT para registro, seguimiento y resolución de tickets con clientes. Sistema implementado con SQL Server, generando mejoras medibles en tiempos de respuesta y trazabilidad.<br><br>
+                            • <strong>Integración con Meta Business API:</strong> Configuración y parametrización completa del módulo de WhatsApp Business en Nodum, incluyendo diseño y customización de plantillas de mensajes automatizados y setup técnico para múltiples clientes corporativos, permitiendo comunicación automatizada con usuarios finales.<br><br>
+                            • <strong>Integración Zetalibra (API SOAP):</strong> Implementación de conexión bidireccional del módulo de Franquicias en Nodum con el sistema Zetalibra mediante API SOAP, permitiendo sincronización automática de datos de ventas, stock y transacciones entre plataformas.<br><br>
+                            • <strong>Desarrollos personalizados para clientes corporativos:</strong> Creación de formularios customizados, procedimientos almacenados y reportes especializados para clientes de alto perfil como Universidad Católica del Uruguay (UCU), Barraca Paraná e Ingco, adaptando el ERP a procesos de negocio específicos.
+                        </div>
+                    </div>
+                    
+                    <div class="leadership-section">
+                        <div class="leadership-title">Evolución en Liderazgo:</div>
+                        <div class="project-list">
+                            • Al tercer año, me asignaron una desarrolladora bajo mi responsabilidad, iniciando mi rol de coordinación técnica y control de calidad<br>
+                            • Coordino asignación de tareas, revisión de código, mentoría técnica y garantizo la calidad de los desarrollos del equipo<br>
+                            • Gestiono múltiples proyectos simultáneos en modalidad 100% remota, manteniendo comunicación efectiva con clientes y equipo
+                        </div>
+                    </div>
+                    
+                    <div class="metrics-section">
+                        <div class="leadership-title">Impacto Mensurable:</div>
+                        <div class="project-list">
+                            • Sistema de Tickets utilizado diariamente por +15 usuarios en equipos de Soporte e IT<br>
+                            • Gestiono desarrollos activos para +10 clientes corporativos simultáneos<br>
+                            • Implementé 3 integraciones API externas actualmente en producción<br>
+                            • Equipo bajo coordinación: 2 desarrolladoras con múltiples proyectos completados exitosamente
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Formación Académica</h2>
+                <div class="education-grid">
+                    <div class="education-item">
+                        <div class="degree">Fundamentos de Programación</div>
+                        <div class="institution">Bios</div>
+                        <div class="year">2022</div>
+                    </div>
+                    <div class="education-item">
+                        <div class="degree">Data Analyst</div>
+                        <div class="institution">Coderhouse</div>
+                        <div class="year">2020</div>
+                    </div>
+                    <div class="education-item">
+                        <div class="degree">Bachillerato</div>
+                        <div class="institution">Colegio Pallotti</div>
+                        <div class="year">2014</div>
+                    </div>
+                    <div class="education-item">
+                        <div class="degree">First Certificate in English</div>
+                        <div class="institution">Cambridge Assessment</div>
+                        <div class="year">2010</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Habilidades Técnicas</h2>
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h3>Lenguajes & Frameworks</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">Node.js</span>
+                            <span class="skill-tag">React Native</span>
+                            <span class="skill-tag">PHP</span>
+                            <span class="skill-tag">HTML/CSS</span>
+                            <span class="skill-tag">ETL & BPM</span>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-category">
+                        <h3>Bases de Datos</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag">MS SQL Server</span>
+                            <span class="skill-tag">T-SQL</span>
+                            <span class="skill-tag">Stored Procedures</span>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-category">
+                        <h3>Integraciones & APIs</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag">API REST</span>
+                            <span class="skill-tag">API SOAP</span>
+                            <span class="skill-tag">Meta Business API</span>
+                            <span class="skill-tag">JasperReport</span>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-category">
+                        <h3>Herramientas de Desarrollo</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Visual Studio Code</span>
+                            <span class="skill-tag">SOAP UI</span>
+                            <span class="skill-tag">Bizagi</span>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-category">
+                        <h3>Habilidades Blandas</h3>
+                        <ul class="skill-list">
+                            <li>Liderazgo de equipos técnicos remotos</li>
+                            <li>Gestión de múltiples proyectos simultáneos</li>
+                            <li>Comunicación con stakeholders corporativos</li>
+                            <li>Mentoría y desarrollo de talento</li>
+                            <li>Code review y control de calidad</li>
+                            <li>Trabajo bajo presión y resolución de urgencias</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="skill-category">
+                        <h3>Idiomas</h3>
+                        <ul class="skill-list">
+                            <li>Español - Nativo</li>
+                            <li>Inglés - B2 (Cambridge FCE)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
