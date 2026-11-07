@@ -1,0 +1,42 @@
+[
+  {
+    "id": "001-erp-soporte",
+    "text": "Empecé en soporte de un ERP resolviendo urgencias de stock y facturación. Hoy lidero un equipo de desarrollo. Lo que más me sirvió de esa etapa: entender los datos del cliente antes de escribir una sola línea de código. #ERP #DesarrolloDeSoftware"
+  },
+  {
+    "id": "002-sql-tip",
+    "text": "Tip de SQL Server: antes de optimizar una consulta lenta, mirá el plan de ejecución. Un índice faltante o un scan donde esperabas un seek suele explicar el 80% del problema. #SQLServer #TSQL"
+  },
+  {
+    "id": "003-integraciones",
+    "text": "Integrar sistemas por API SOAP en 2026 todavía es más común de lo que parece. Consejo: guardá cada request y response en un log. Cuando algo falle a las 3 de la mañana, vas a agradecerlo. #APIs #Integraciones"
+  },
+  {
+    "id": "004-liderazgo",
+    "text": "Lo que aprendí al pasar de desarrollador a líder de equipo: tu trabajo ya no es escribir el mejor código, es lograr que el equipo escriba buen código sin depender de vos. #Liderazgo #EquiposRemotos"
+  },
+  {
+    "id": "005-code-review",
+    "text": "Un buen code review no busca demostrar quién sabe más. Busca que el código sea fácil de mantener por la próxima persona que lo lea, que muchas veces sos vos dentro de seis meses. #CodeReview"
+  },
+  {
+    "id": "006-tickets",
+    "text": "Armar un sistema de tickets interno desde cero me enseñó algo: la trazabilidad no es burocracia. Es la diferencia entre 'creo que lo arreglamos' y 'sé exactamente qué pasó y cuándo'. #Soporte #IT"
+  },
+  {
+    "id": "007-whatsapp",
+    "text": "Automatizar mensajes de WhatsApp Business para clientes parece simple hasta que llegan las plantillas, las aprobaciones de Meta y los idiomas. Paciencia y buena documentación. #WhatsAppBusiness #MetaAPI"
+  },
+  {
+    "id": "008-stakeholders",
+    "text": "La mitad de un proyecto exitoso se define en la primera reunión con el cliente. Preguntar 'para qué' antes que 'qué' ahorra semanas de retrabajo. #GestiónDeProyectos"
+  },
+  {
+    "id": "009-remoto",
+    "text": "Trabajar 100% remoto con varios clientes a la vez: comunicación escrita clara, expectativas explícitas y nada de suponer que 'ya lo saben'. #TrabajoRemoto"
+  },
+  {
+    "id": "010-aprender",
+    "text": "Cinco años en ERP y sigo aprendiendo algo nuevo cada semana. El día que deje de pasar, es momento de buscar otro desafío. #Aprendizaje #Desarrollo"
+  }
+]

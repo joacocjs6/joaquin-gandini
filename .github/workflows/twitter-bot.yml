@@ -1,0 +1,64 @@
+name: Twitter bot - publicación diaria
+
+on:
+  schedule:
+    # Todos los días a las 11:47 UTC (08:47 en Montevideo).
+    - cron: '47 11 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Solo mostrar qué se publicaría (no publica)'
+        type: boolean
+        default: false
+      force:
+        description: 'Publicar aunque ya se haya publicado hoy'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: twitter-bot
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: twitter-bot
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: twitter-bot/package-lock.json
+
+      - run: npm ci
+
+      - run: npm test
+
+      - name: Publicar
+        run: node src/index.js
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          DRY_RUN: ${{ inputs.dry_run && 'true' || 'false' }}
+          FORCE: ${{ inputs.force && 'true' || 'false' }}
+
+      - name: Guardar estado
+        run: |
+          if git diff --quiet -- state.json; then
+            echo "Sin cambios en el estado."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898899+github-actions[bot]@users.noreply.github.com"
+          git add state.json
+          git commit -m "twitter-bot: registrar publicación $(date -u +%F)"
+          git push
