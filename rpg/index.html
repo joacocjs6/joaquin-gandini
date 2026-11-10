@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi Primer RPG</title>
+<!--
+  Este archivo arma la PANTALLA del juego:
+    - un <canvas> donde se dibuja el mapa
+    - un panel con los datos del héroe
+    - una caja de mensajes
+    - botones para moverse desde el celular
+  Toda la lógica está en juego.js (se carga al final).
+-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600&display=swap">
+<style>
+  /* Un solo estilo oscuro, tipo consola retro. */
+  :root {
+    --fondo: #14161c;
+    --panel: #1f2330;
+    --borde: #3a4155;
+    --texto: #e8e6df;
+    --suave: #9aa1b5;
+    --oro: #f2c14e;
+    --vida: #e35d5d;
+    --titulo: "Press Start 2P", monospace;
+    --cuerpo: "Inter", system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--fondo);
+    color: var(--texto);
+    font-family: var(--cuerpo);
+    padding-block: 24px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .juego {
+    max-width: 880px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  h1 {
+    font-family: var(--titulo);
+    font-size: 18px;
+    line-height: 1.5;
+    margin: 0;
+  }
+  h1 small { display: block; font-size: 10px; color: var(--suave); margin-top: 6px; }
+  .zona {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border: 4px solid var(--borde);
+    image-rendering: pixelated;
+  }
+  .panel {
+    flex: 1 1 180px;
+    min-width: 0;
+    background: var(--panel);
+    border: 4px solid var(--borde);
+    padding: 16px;
+    display: grid;
+    gap: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .panel h2 { font-family: var(--titulo); font-size: 11px; margin: 0 0 4px; }
+  .dato { display: flex; justify-content: space-between; gap: 8px; }
+  .dato span:first-child { color: var(--suave); text-transform: uppercase; font-size: 12px; letter-spacing: .08em; }
+  #vida { color: var(--vida); font-weight: 600; }
+  #oro { color: var(--oro); font-weight: 600; }
+  #mensaje {
+    background: var(--panel);
+    border: 4px solid var(--borde);
+    padding: 14px 16px;
+    min-height: 3.2em;
+    line-height: 1.5;
+  }
+  .flechas {
+    display: grid;
+    grid-template-columns: repeat(3, 52px);
+    gap: 6px;
+    justify-content: center;
+  }
+  .flechas button {
+    height: 52px;
+    font-size: 20px;
+    background: var(--panel);
+    color: var(--texto);
+    border: 3px solid var(--borde);
+    cursor: pointer;
+  }
+  .flechas button:active { background: var(--borde); }
+  .flechas button:focus-visible { outline: 3px solid var(--oro); }
+</style>
+</head>
+<body>
+<main class="juego">
+  <h1>Mi Primer RPG <small>Lección 1 · El mundo y el héroe</small></h1>
+
+  <div class="zona">
+    <canvas id="pantalla"></canvas>
+
+    <aside class="panel">
+      <h2>🧙 Héroe</h2>
+      <div class="dato"><span>Vida</span><span id="vida">-</span></div>
+      <div class="dato"><span>Nivel</span><span id="nivel">-</span></div>
+      <div class="dato"><span>Oro</span><span id="oro">-</span></div>
+    </aside>
+  </div>
+
+  <div id="mensaje"></div>
+
+  <!-- data-dir="dx,dy" le dice al juego hacia dónde mover -->
+  <div class="flechas">
+    <span></span><button id="btn-arriba" data-dir="0,-1" aria-label="Arriba">▲</button><span></span>
+    <button id="btn-izq" data-dir="-1,0" aria-label="Izquierda">◀</button>
+    <button id="btn-abajo" data-dir="0,1" aria-label="Abajo">▼</button>
+    <button id="btn-der" data-dir="1,0" aria-label="Derecha">▶</button>
+  </div>
+</main>
+
+<script src="juego.js"></script>
+</body>
+</html>
