@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pibe de Potrero</title>
+<!--
+  PIBE DE POTRERO — un RPG de fútbol por capítulos.
+  Este archivo solo arma la pantalla. La lógica está en los .js
+  (mirá el orden de carga al final del archivo).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<style>
+  /* Concepto: noche de barrio bajo un farol de sodio. Un solo look oscuro,
+     asfalto + luz ámbar + tiza blanca de las líneas de la cancha. */
+  :root {
+    --asfalto: #16171b;
+    --asfalto-2: #1f2127;
+    --cordon: #34363e;
+    --tiza: #efe9dc;
+    --gris: #9b9a95;
+    --farol: #f2a93b;
+    --pasto: #6fb553;
+    --tarjeta: #e2574c;
+    --display: "Anton", "Impact", "Arial Narrow", sans-serif;
+    --texto: "Barlow", system-ui, sans-serif;
+    --datos: "Barlow Condensed", "Arial Narrow", sans-serif;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; } /* "hidden" siempre gana */
+  html, body { min-height: 100%; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(ellipse 70% 40% at 50% -5%, rgba(242,169,59,.16), transparent 70%),
+      var(--asfalto);
+    background-color: var(--asfalto);
+    color: var(--tiza);
+    font-family: var(--texto);
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  .contenedor {
+    max-width: 920px;
+    margin: 0 auto;
+    padding-block: 16px 32px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* ---------- Barra de estado ---------- */
+  .hud {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 18px;
+    padding: 10px 14px;
+    background: var(--asfalto-2);
+    border: 2px solid var(--cordon);
+    font-family: var(--datos);
+    font-size: 15px;
+    letter-spacing: .03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .hud .marca {
+    font-family: var(--display);
+    font-size: 22px;
+    letter-spacing: .02em;
+    color: var(--farol);
+    margin-right: auto;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .hud .dato { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .hud .dato small { color: var(--gris); text-transform: uppercase; font-size: 12px; letter-spacing: .1em; }
+  .energia { width: 60px; height: 6px; background: var(--cordon); display: inline-block; }
+  .energia i { display: block; height: 100%; background: var(--pasto); transition: width .3s; }
+  button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+  button:focus-visible { outline: 3px solid var(--farol); outline-offset: 2px; }
+  .btn-ficha {
+    background: var(--farol);
+    color: var(--asfalto);
+    border: 0;
+    padding: 6px 14px;
+    font-family: var(--datos);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+  .btn-ficha.aviso { animation: latido 1.2s infinite; }
+  @keyframes latido { 50% { box-shadow: 0 0 0 5px rgba(242,169,59,.35); } }
+
+  /* ---------- Vista: mundo ---------- */
+  .mundo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 220px;
+    gap: 16px;
+    align-items: start;
+  }
+  .lienzo { min-width: 0; }
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 3px solid var(--cordon);
+    background: var(--asfalto-2);
+  }
+  .lateral { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .lugar {
+    font-family: var(--display);
+    font-size: 22px;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin: 0;
+  }
+  .objetivo {
+    margin: 0;
+    padding: 10px 12px;
+    border-left: 3px solid var(--farol);
+    background: var(--asfalto-2);
+    font-size: 14px;
+  }
+  .mensaje {
+    margin: 0;
+    padding: 12px 14px;
+    background: var(--asfalto-2);
+    border: 2px solid var(--cordon);
+    min-height: 3.2em;
+  }
+  .flechas {
+    display: grid;
+    grid-template-columns: repeat(3, 52px);
+    gap: 6px;
+    justify-content: center;
+  }
+  .flechas button {
+    height: 52px;
+    font-size: 18px;
+    background: var(--asfalto-2);
+    border: 2px solid var(--cordon);
+  }
+  .flechas button:active { background: var(--cordon); }
+
+  /* ---------- Vista: relato ---------- */
+  .relato {
+    max-width: 680px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .relato h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(28px, 6vw, 44px);
+    line-height: 1;
+    text-transform: uppercase;
+    margin: 8px 0 0;
+    text-wrap: balance;
+    color: var(--farol);
+  }
+  .marcador {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 4px 12px;
+    padding: 10px 14px;
+    background: #0d0e10;
+    border: 2px solid var(--cordon);
+    font-family: var(--datos);
+    font-variant-numeric: tabular-nums;
+  }
+  .marcador .equipo { font-weight: 700; text-transform: uppercase; letter-spacing: .05em; min-width: 0; overflow-wrap: anywhere; }
+  .marcador .equipo:first-child { text-align: right; }
+  .marcador .goles { font-family: var(--display); font-size: 34px; color: var(--farol); line-height: 1; }
+  .marcador .meta { grid-column: 1 / -1; text-align: center; color: var(--gris); font-size: 14px; letter-spacing: .08em; }
+
+  .relato-texto { display: flex; flex-direction: column; gap: 10px; font-size: 17px; }
+  .linea p { margin: 0 0 .7em; }
+  .linea p:last-child { margin-bottom: 0; }
+  .linea strong { color: var(--farol); font-weight: 700; }
+  .linea { animation: entra .35s ease-out; }
+  @keyframes entra { from { opacity: .2; transform: translateY(4px); } }
+  .linea.momento { border-top: 1px dashed var(--cordon); padding-top: 12px; }
+  .linea.eleccion { color: var(--gris); font-style: italic; }
+  .linea.dado-bien, .linea.dado-mal {
+    font-family: var(--datos); font-weight: 700; letter-spacing: .12em; font-size: 15px;
+  }
+  .linea.dado-bien { color: var(--pasto); }
+  .linea.dado-mal { color: var(--tarjeta); }
+  .linea.gol {
+    font-family: var(--display);
+    font-size: clamp(34px, 9vw, 56px);
+    line-height: 1;
+    color: var(--farol);
+    text-shadow: 0 0 24px rgba(242,169,59,.45);
+    animation: gol .6s cubic-bezier(.2,1.6,.4,1);
+  }
+  @keyframes gol { from { transform: scale(.6); opacity: 0; } }
+  .linea.gol-contra { color: var(--tarjeta); font-family: var(--datos); font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
+  .linea.final { background: var(--asfalto-2); border: 2px solid var(--farol); padding: 14px; }
+
+  .opciones { display: flex; flex-direction: column; gap: 8px; }
+  .opcion {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--asfalto-2);
+    border: 2px solid var(--cordon);
+    font-weight: 600;
+    transition: border-color .15s, transform .15s;
+  }
+  .opcion:hover:not(:disabled) { border-color: var(--farol); transform: translateX(3px); }
+  .opcion small { font-family: var(--datos); font-weight: 500; color: var(--gris); letter-spacing: .04em; }
+  .opcion:disabled { opacity: .45; cursor: not-allowed; }
+  .form-nombre { display: flex; gap: 8px; flex-wrap: wrap; }
+  .form-nombre input {
+    flex: 1 1 180px;
+    min-width: 0;
+    padding: 12px 14px;
+    font: inherit;
+    font-size: 18px;
+    background: var(--asfalto-2);
+    color: var(--tiza);
+    border: 2px solid var(--farol);
+  }
+  .form-nombre .opcion { width: auto; flex: 1 1 180px; }
+
+  /* ---------- Ficha ---------- */
+  .ficha {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: rgba(8,9,11,.82);
+    overflow-y: auto;
+    padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  }
+  .ficha-caja {
+    max-width: 560px;
+    margin: 0 auto;
+    background: var(--asfalto-2);
+    border: 2px solid var(--farol);
+    padding: 20px;
+    position: relative;
+  }
+  .cerrar {
+    position: absolute; top: 10px; right: 10px;
+    background: none; border: 2px solid var(--cordon); width: 36px; height: 36px; font-size: 18px;
+  }
+  .ficha-cabeza h2 { font-family: var(--display); font-weight: 400; font-size: 34px; text-transform: uppercase; margin: 0; line-height: 1.1; padding-right: 40px; overflow-wrap: anywhere; }
+  .ficha-cabeza p { margin: 2px 0 8px; color: var(--gris); }
+  .ficha-cabeza small, .nota { color: var(--gris); font-size: 14px; }
+  .xp, .barra { display: block; height: 6px; background: var(--cordon); }
+  .xp i, .barra i { display: block; height: 100%; background: var(--farol); }
+  .ficha section { margin-top: 20px; }
+  .ficha h3 {
+    font-family: var(--datos); text-transform: uppercase; letter-spacing: .12em; font-size: 14px;
+    color: var(--gris); margin: 0 0 10px; display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline;
+  }
+  .ficha h3 em { color: var(--farol); font-style: normal; }
+  .stat {
+    display: grid;
+    grid-template-columns: 9.5em 1fr 3.4em 32px;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat b { text-align: right; }
+  .stat b small { color: var(--pasto); font-weight: 500; }
+  .stat button { width: 32px; height: 28px; background: var(--farol); color: var(--asfalto); border: 0; font-weight: 700; }
+  .items { display: flex; flex-direction: column; gap: 6px; }
+  .item { text-align: left; background: var(--asfalto); border: 2px solid var(--cordon); padding: 8px 12px; display: flex; flex-direction: column; }
+  .item.puesto { border-color: var(--pasto); }
+  .item small { color: var(--gris); font-family: var(--datos); }
+  .misiones, .recuerdos { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+  .misiones small { color: var(--gris); }
+  .misiones .hecha b { color: var(--pasto); }
+  .vacio { color: var(--gris); list-style: none; margin-left: -18px; }
+  p.vacio { margin: 0; }
+  .peligro { background: var(--tarjeta); color: var(--tiza); border: 0; padding: 8px 14px; font-weight: 600; margin-right: 8px; }
+  .peligro.suave { background: none; border: 2px solid var(--tarjeta); color: var(--tarjeta); }
+  .ficha section > button:not(.peligro) { background: none; border: 2px solid var(--cordon); padding: 8px 14px; }
+
+  @media (max-width: 700px) {
+    .mundo { grid-template-columns: 1fr; }
+    .stat { grid-template-columns: 8em 1fr 3.2em 32px; gap: 8px; font-size: 15px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="contenedor">
+
+  <header class="hud">
+    <span class="marca">Pibe de Potrero</span>
+    <span class="dato"><small>Día</small> <b id="hud-dia">1</b></span>
+    <span class="dato"><small>Energía</small> <span class="energia"><i id="hud-energia-barra"></i></span> <b id="hud-energia">100</b></span>
+    <span class="dato"><small>Plata</small> <b id="hud-plata">$0</b></span>
+    <span class="dato"><small>Fama</small> <b id="hud-fama">0</b></span>
+    <span class="dato"><small>Nivel</small> <b id="hud-nivel">1</b></span>
+    <button id="btn-ficha" class="btn-ficha">Ficha</button>
+  </header>
+
+  <!-- VISTA 1: el mundo abierto -->
+  <main id="vista-mundo" class="mundo" hidden>
+    <div class="lienzo">
+      <canvas id="mapa"></canvas>
+    </div>
+    <aside class="lateral">
+      <h2 id="lugar" class="lugar"></h2>
+      <p id="objetivo" class="objetivo"></p>
+      <p id="mensaje" class="mensaje"></p>
+      <div class="flechas">
+        <span></span><button id="btn-arriba" data-dir="0,-1" aria-label="Arriba">▲</button><span></span>
+        <button id="btn-izq" data-dir="-1,0" aria-label="Izquierda">◀</button>
+        <button id="btn-abajo" data-dir="0,1" aria-label="Abajo">▼</button>
+        <button id="btn-der" data-dir="1,0" aria-label="Derecha">▶</button>
+      </div>
+    </aside>
+  </main>
+
+  <!-- VISTA 2: relato (historia, partidos, tiendas) -->
+  <main id="vista-relato" class="relato" hidden>
+    <h1 id="relato-titulo"></h1>
+    <div id="marcador" class="marcador" hidden></div>
+    <div id="relato-texto" class="relato-texto"></div>
+    <div id="opciones" class="opciones"></div>
+  </main>
+</div>
+
+<!-- La ficha del jugador (se abre encima de todo) -->
+<div id="ficha" class="ficha" hidden>
+  <div class="ficha-caja">
+    <button id="btn-cerrar-ficha" class="cerrar" aria-label="Cerrar ficha">✕</button>
+    <div id="ficha-contenido"></div>
+  </div>
+</div>
+
+<!-- El orden importa: cada archivo usa cosas de los anteriores -->
+<script src="datos.js"></script>
+<script src="estado.js"></script>
+<script src="relato.js"></script>
+<script src="historia.js"></script>
+<script src="mundo.js"></script>
+<script src="misiones.js"></script>
+<script src="juego.js"></script>
+</body>
+</html>
